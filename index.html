@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת שיתוף תכנים - כניסה</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light theme */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-bg: #f0fdf4;
+            --success-color: #16a34a;
+            --success-border: #bbf7d0;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-primary: #60a5fa;
+            --accent-hover: #3b82f6;
+            --border-color: #334155;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --gradient: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+            --success-bg: #0f2a1a;
+            --success-color: #22c55e;
+            --success-border: #166534;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-primary);
+        }
+
+        .login-container {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .consent-section {
+            margin-bottom: 30px;
+            text-align: right;
+        }
+
+        .consent-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .consent-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-primary);
+            margin-top: 2px;
+        }
+
+        .consent-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            text-align: right;
+        }
+
+        .google-btn {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .google-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .google-btn.enabled:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-btn.enabled:active {
+            transform: translateY(0);
+        }
+
+        .google-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #fecaca;
+            display: none;
+        }
+
+        [data-theme="dark"] .error-message {
+            background: #2d1b1b;
+            border-color: #5b2626;
+        }
+
+        .success-message {
+            background: var(--success-bg);
+            color: var(--success-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid var(--success-border);
+            display: none;
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .title {
+                font-size: 1.4rem;
+            }
+
+            .consent-checkbox {
+                align-items: flex-start;
+            }
+        }
+
+        /* Animation for page load */
+        .login-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <div class="login-container">
+        <div class="logo">
+            <img src="https://i.ibb.co/JjK9HTcm/gifted.png" alt="לוגו מחוננים" style="width: 80px; height: 80px; border-radius: 8px; margin-bottom: 20px;">
+            <h1 class="title">חומר פתוח - מחוננים</h1>
+            <p class="subtitle">ברוכים הבאים לפלטפורמת שיתוף המשאבים והתכנים החינוכיים</p>
+        </div>
+
+        <div class="consent-section">
+            <div class="consent-checkbox">
+                <input type="checkbox" id="emailConsent" />
+                <label for="emailConsent" class="consent-text">
+                    אני מאשר/ת למערכת לאסוף ולשמור את כתובת הדואר האלקטרוני שלי למטרת זיהוי והתחברות למערכת
+                </label>
+            </div>
+        </div>
+
+        <button class="google-btn" id="googleSignIn">
+            <svg class="google-icon" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span id="btnText">התחבר עם Google</span>
+            <div class="loading" id="loading"></div>
+        </button>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="footer">
+            <p>מערכת מאובטחת עם Firebase Authentication</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+        
+        // Import Firebase configuration
+        import firebaseConfig from './config.js';
+
+        // Initialize Firebase with secure config
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        // User roles configuration
+        const userRoles = {
+            'sdkeren52@gmail.com': {
+                name: 'מנהל מערכת',
+                role: 'admin',
+                department: 'ניהול מערכת'
+            },
+            'papasnir@gmail.com': {
+                name: 'מנהל מערכת',
+                role: 'admin', 
+                department: 'ניהול מערכת'
+            }
+        };
+
+        // DOM elements
+        const googleSignInBtn = document.getElementById('googleSignIn');
+        const btnText = document.getElementById('btnText');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const emailConsent = document.getElementById('emailConsent');
+
+        // Theme management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        // Consent checkbox management
+        function checkConsent() {
+            if (emailConsent.checked) {
+                googleSignInBtn.classList.add('enabled');
+            } else {
+                googleSignInBtn.classList.remove('enabled');
+            }
+        }
+
+        // Error and success message handling
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // Loading state
+        function setLoading(isLoading) {
+            if (isLoading) {
+                btnText.style.display = 'none';
+                loading.style.display = 'block';
+                googleSignInBtn.disabled = true;
+            } else {
+                btnText.style.display = 'block';
+                loading.style.display = 'none';
+                googleSignInBtn.disabled = false;
+            }
+        }
+
+        // Save user data to database
+        async function saveUserData(user, userData) {
+            try {
+                const userRef = ref(database, `users/${user.uid}`);
+                await set(userRef, {
+                    email: user.email,
+                    name: userData?.name || user.displayName || 'משתמש',
+                    role: userData?.role || 'teacher',
+                    department: userData?.department || 'מורי מחוננים',
+                    lastLogin: new Date().toISOString(),
+                    photoURL: user.photoURL,
+                    consentGiven: true,
+                    joinDate: new Date().toISOString()
+                });
+                console.log('User data saved successfully');
+            } catch (error) {
+                console.error('Error saving user data:', error);
+            }
+        }
+
+        // Google Sign In
+        async function signInWithGoogle() {
+            if (!emailConsent.checked) {
+                showError('יש לאשר את איסוף כתובת הדואר האלקטרוני כדי להמשיך');
+                return;
+            }
+
+            setLoading(true);
+            
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                // Check user role (admin or regular teacher)
+                const userData = userRoles[user.email];
+                
+                // Save user data
+                await saveUserData(user, userData);
+
+                showSuccess('התחברות בוצעה בהצלחה! מעביר לפלטפורמה...');
+                
+                // Redirect to platform page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'platform.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Sign in error:', error);
+                
+                let errorMsg = 'שגיאה בהתחברות';
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMsg = 'ההתחברות בוטלה על ידי המשתמש';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMsg = 'בעיית חיבור לאינטרנט';
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorMsg = 'החלון הקופץ נחסם על ידי הדפדפן';
+                } else if (error.code === 'auth/cancelled-popup-request') {
+                    errorMsg = 'הבקשה להתחברות בוטלה';
+                }
+                
+                showError(errorMsg);
+                setLoading(false);
+            }
+        }
+
+        // Check if user is already signed in
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is already signed in, redirect to platform
+                showSuccess('כבר מחובר! מעביר לפלטפורמה...');
+                setTimeout(() => {
+                    window.location.href = 'platform.html';
+                }, 1000);
+            }
+        });
+
+        // Event listeners
+        googleSignInBtn.addEventListener('click', signInWithGoogle);
+        themeToggle.addEventListener('click', toggleTheme);
+        emailConsent.addEventListener('change', checkConsent);
+
+        // Initialize theme and consent check on page load
+        initTheme();
+        checkConsent();
+
+        // Make functions available globally for debugging
+        window.auth = auth;
+        window.database = database;
+    </script>
+</body>
+</html>
