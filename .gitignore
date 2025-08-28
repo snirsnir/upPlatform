@@ -1,0 +1,72 @@
+# Environment variables - NEVER commit these!
+.env
+.env.local
+.env.production
+.env.development
+
+# Firebase config with real API keys
+config-production.js
+firebase-config-real.js
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Node.js (if using)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build directories
+dist/
+build/
+out/
+
+# Temporary files
+tmp/
+temp/
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# Local development
+.local
+.vercel
+
+# Firebase
+.firebase/
+firebase-debug.log*
+.firebaserc
+
+# Netlify
+.netlify/
+
+# Testing
+coverage/
+.nyc_output
